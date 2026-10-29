@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<title>Mis citaciones · Cantoalegre</title>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #3779BD; --azul-osc: #2E6AA8; --petroleo: #004059; --amarillo: #FFEB4C; --naranja: #FF5800;
+    --turquesa: #5BD6D6; --fondo: #F4F5EE; --blanco: #FFFFFF; --texto2: #3F5A66; --linea: #E3E6DA;
+    --ok-bg: #EEF6D6; --ok: #3B5000; --pend-bg: #FFF0C2; --pend: #6B4A00; --gris-bg: #ECEDE6; --gris: #3F4A4F;
+    --conc-bg: #FFE3D3; --conc: #A63A00; --ens-bg: #DDF4F8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--fondo); color: var(--petroleo);
+    font-family: 'Cabin', 'Trebuchet MS', sans-serif; font-size: 16px; line-height: 1.4; }
+  body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .wrap { max-width: 520px; margin: 0 auto; }
+  header { background: var(--azul); color: #fff; padding: 20px 20px 34px; position: relative; overflow: hidden; }
+  header svg { position: absolute; right: -20px; top: -14px; }
+  .marca { font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+  .saludo { margin-top: 16px; font-size: 17px; }
+  h1 { font-family: 'Patrick Hand', 'Comic Sans MS', cursive; font-weight: 400; font-size: 46px; line-height: 1; margin: 2px 0 0; }
+  .temporada { display: inline-block; margin-top: 10px; background: var(--petroleo); color: #fff; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
+  .kids { display: flex; gap: 8px; padding: 0 16px; margin-top: -18px; position: relative; flex-wrap: wrap; }
+  .kid { min-height: 44px; border: 0; border-radius: 999px; padding: 0 18px; font: inherit; font-weight: 700; font-size: 15px;
+    background: #fff; color: var(--petroleo); box-shadow: 0 2px 0 rgba(0,64,89,.12); cursor: pointer; }
+  .kid[aria-pressed="true"] { background: var(--amarillo); }
+  main { padding: 18px 16px 32px; }
+  .seccion { font-size: 15px; font-weight: 700; color: var(--azul-osc); margin: 22px 4px 10px; }
+  .card { background: #fff; border-radius: 20px; margin-bottom: 12px; overflow: hidden; }
+  .resumen { width: 100%; display: flex; gap: 12px; align-items: center; padding: 12px; border: 0; background: transparent;
+    font: inherit; color: inherit; text-align: left; cursor: pointer; }
+  .dia { width: 58px; height: 64px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dia.c { background: var(--conc-bg); color: var(--conc); } .dia.e { background: var(--ens-bg); color: var(--petroleo); }
+  .dia small { font-size: 12px; font-weight: 700; text-transform: capitalize; }
+  .dia b { font-size: 25px; line-height: 1; }
+  .tit { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .tipo { font-size: 12px; font-weight: 700; color: var(--texto2); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .nombre { font-size: 17px; font-weight: 700; line-height: 1.2; }
+  .sub { font-size: 14px; color: var(--texto2); }
+  .pill { border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .p-ok { background: var(--ok-bg); color: var(--ok); } .p-pend { background: var(--pend-bg); color: var(--pend); }
+  .p-no { background: var(--gris-bg); color: var(--gris); } .p-cambio { background: var(--amarillo); color: var(--petroleo); }
+  .detalle { padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 14px; }
+  .aviso { border-radius: 14px; padding: 12px 14px; font-size: 15px; }
+  .aviso.amarillo { background: var(--amarillo); } .aviso.pend { background: var(--pend-bg); color: var(--pend); }
+  .linea { display: flex; gap: 12px; align-items: flex-start; }
+  .punto { width: 14px; height: 14px; border-radius: 999px; margin-top: 4px; flex-shrink: 0; }
+  .linea b { display: block; font-size: 16px; }
+  .linea span { font-size: 14px; color: var(--texto2); }
+  .faltante { color: var(--pend); font-weight: 700; }
+  h3 { margin: 0; font-family: 'Patrick Hand', 'Comic Sans MS', cursive; font-weight: 400; font-size: 26px; }
+  ul.llevar { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  ul.llevar li { display: flex; gap: 10px; align-items: center; }
+  ul.llevar li::before { content: ''; width: 8px; height: 8px; border-radius: 999px; background: var(--naranja); flex-shrink: 0; }
+  .botones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn { min-height: 50px; border-radius: 14px; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; border: 2px solid var(--azul); }
+  .btn.si { background: var(--azul); color: #fff; } .btn.no { background: #fff; color: var(--azul-osc); }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  .estado { display: flex; align-items: center; gap: 10px; border-radius: 14px; padding: 12px 14px; font-weight: 600; }
+  .estado.ok { background: var(--ok-bg); color: var(--ok); } .estado.no { background: var(--gris-bg); color: var(--gris); }
+  .estado button { margin-left: auto; min-height: 44px; border: 0; background: transparent; font: inherit; font-weight: 700; text-decoration: underline; color: inherit; cursor: pointer; }
+  .enlaces { display: flex; gap: 8px; flex-wrap: wrap; }
+  .enlaces a { flex: 1 1 140px; min-height: 46px; border-radius: 14px; background: var(--ens-bg); color: var(--petroleo); font-weight: 700;
+    font-size: 15px; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 0 12px; text-align: center; }
+  .vacio { background: #fff; border-radius: 20px; padding: 22px; text-align: center; color: var(--texto2); }
+  .pasados summary { cursor: pointer; font-weight: 700; color: var(--azul-osc); padding: 8px 4px; min-height: 44px; display: flex; align-items: center; }
+  .pasado { display: flex; justify-content: space-between; gap: 10px; background: #fff; border-radius: 14px; padding: 10px 14px; margin-bottom: 8px; font-size: 15px; }
+  .cargando, .error { padding: 60px 24px; text-align: center; }
+  .error b { display: block; font-size: 18px; margin-bottom: 8px; }
+  .toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--petroleo); color: #fff;
+    padding: 12px 18px; border-radius: 14px; font-weight: 600; max-width: 90vw; z-index: 10; }
+  :focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) { .detalle { animation: abrir .18s ease-out; } @keyframes abrir { from { opacity: 0; transform: translateY(-4px); } } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="cargando">Cargando tus citaciones…</div></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+  // Dirección de la aplicación de Apps Script (la misma de Config › URL de la página, termina en /exec).
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzpUuugwA1uB-4z7ldCX5fYAjinSyelxdJ7R7cItHzl1J7Tn5MYb_y4lptOQU_cQZ6T/exec';
+  var params = new URLSearchParams(location.search);
+  var TOKEN = (params.get('t') || '').replace(/[^a-f0-9]/gi, '');
+  var FOCUS = (params.get('e') || '').replace(/[^A-Za-z0-9_-]/g, '');
+
+  // Capa de datos: con API_URL (página externa) usa fetch sin cookies; si no, google.script.run.
+  var api = {
+    load: function (ok, ko) {
+      if (API_URL) {
+        fetch(API_URL + '?api=portal&t=' + encodeURIComponent(TOKEN), { credentials: 'omit', redirect: 'follow' })
+          .then(function (r) { return r.json(); })
+          .then(function (j) { j.ok ? ok(j.data) : ko(new Error(j.error)); })
+          .catch(function () { ko(new Error('Revisa tu conexión a internet e intenta de nuevo.')); });
+      } else {
+        google.script.run.withSuccessHandler(ok).withFailureHandler(ko).portalData(TOKEN);
+      }
+    },
+    respond: function (ev, kid, resp, ok, ko) {
+      if (API_URL) {
+        fetch(API_URL, { method: 'POST', credentials: 'omit', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'respond', t: TOKEN, e: ev, n: kid, r: resp }) })
+          .then(function (r) { return r.json(); })
+          .then(function (j) { j.ok ? ok(j.data) : ko(new Error(j.error)); })
+          .catch(function () { ko(new Error('No hubo conexión.')); });
+      } else {
+        google.script.run.withSuccessHandler(ok).withFailureHandler(ko).portalRespond(TOKEN, ev, kid, resp);
+      }
+    }
+  };
+  var data = null, activo = 0, abierto = {};
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  function toast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.hidden = false; clearTimeout(t._h); t._h = setTimeout(function () { t.hidden = true; }, 3200); }
+
+  function load() {
+    if (!TOKEN) { showError('Falta tu enlace personal', 'Abre la página desde el botón del correo que te envió Cantoalegre.'); return; }
+    api.load(function (d) {
+      data = d;
+      if (FOCUS) {
+        d.kids.forEach(function (k, i) { k.items.forEach(function (it) { if (it.evento.id === FOCUS) { activo = i; abierto[i + '|' + FOCUS] = true; } }); });
+      }
+      render();
+    }, function (e) { showError('No pudimos abrir tu página', e.message); });
+  }
+
+  function showError(t, m) {
+    document.getElementById('app').innerHTML = '<div class="error"><b>' + esc(t) + '</b>' + esc(m) + '</div>';
+  }
+
+  function diaCorto(f) {
+    if (!f) return { d: '?', w: 'Por def.' };
+    var p = f.split('-').map(Number), dt = new Date(p[0], p[1] - 1, p[2]);
+    return { d: p[2], w: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'][dt.getDay()] };
+  }
+
+  function pillRespuesta(it) {
+    if (it.respuesta === 'Confirmó') return '<span class="pill p-ok">Confirmado</span>';
+    if (it.respuesta === 'No puede') return '<span class="pill p-no">No asiste</span>';
+    return '<span class="pill p-pend">Por responder</span>';
+  }
+
+  function valor(v, pend) {
+    if (!v) return '<span class="faltante">Por confirmar</span>';
+    return esc(v) + (pend ? ' <span class="faltante">(por confirmar)</span>' : '');
+  }
+
+  // Una línea del horario. Si faltan hora y lugar, dice una sola vez «por confirmar».
+  function paso(color, titulo, hora, horaPend, lugar, lugarPend, extra) {
+    var dot = '<span class="punto" style="background:' + color + '"></span>';
+    if (!hora && !lugar) return '<div class="linea">' + dot + '<div><b>' + titulo + ' <span class="faltante">por confirmar</span></b>' + (extra ? '<span>' + esc(extra) + '</span>' : '') + '</div></div>';
+    var sub = lugar ? valor(lugar, lugarPend) : '<span class="faltante">Lugar por confirmar</span>';
+    return '<div class="linea">' + dot + '<div><b>' + titulo + ' ' + valor(hora, horaPend) + '</b><span>' + sub + (extra ? ' · ' + esc(extra) : '') + '</span></div></div>';
+  }
+
+  function icsLink(e) {
+    if (!e.ics) return '';
+    if (API_URL) return '<a href="#" data-ics="' + esc(e.id) + '">Calendario del iPhone</a>';
+    if (data.url) return '<a href="' + esc(data.url + '?t=' + encodeURIComponent(TOKEN) + '&ics=' + encodeURIComponent(e.id)) + '" target="_blank" rel="noopener">Calendario del iPhone</a>';
+    return '';
+  }
+
+  function descargarIcs(evId) {
+    var e = null;
+    data.kids.forEach(function (k) { k.items.forEach(function (it) { if (it.evento.id === evId) e = it.evento; }); });
+    if (!e || !e.ics) return;
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([e.ics], { type: 'text/calendar;charset=utf-8' }));
+    a.download = 'cantoalegre-' + e.id + '.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  function detalle(it, kid) {
+    var e = it.evento, pc = e.porConfirmar || [], h = '';
+    if (e.queCambio) h += '<div class="aviso amarillo"><b>Cambió:</b> ' + esc(e.queCambio) + '</div>';
+    if (e.estadoInfo !== 'Confirmada') h += '<div class="aviso pend">Parte de esta información todavía está por confirmar. Te avisaremos por correo cuando se defina.</div>';
+    h += paso('var(--amarillo);border:3px solid var(--petroleo)', 'Llegada', e.horaLlegada, pc.indexOf('horaLlegada') > -1, e.lugarLlegada, pc.indexOf('lugarLlegada') > -1, '');
+    if (e.tipo === 'Concierto') h += '<div class="linea"><span class="punto" style="background:var(--naranja)"></span><div><b>Función ' + valor(e.horaInicio, pc.indexOf('horaInicio') > -1) + '</b><span>' + valor(e.lugar, pc.indexOf('lugar') > -1) + (e.horasFuncion ? ' · también ' + esc(e.horasFuncion) : '') + '</span></div></div>';
+    else if (e.lugar) h += '<div class="linea"><span class="punto" style="background:var(--turquesa)"></span><div><b>Lugar</b><span>' + esc(e.lugar) + '</span></div></div>';
+    h += paso('var(--azul)', 'Recogida', e.horaRecogida, pc.indexOf('horaRecogida') > -1, e.lugarRecogida, false, e.fechaFin && e.fechaFin !== e.fecha ? 'regreso ' + e.fechaFinLarga : '');
+    if (e.direccion) h += '<div class="sub">' + esc(e.direccion) + '</div>';
+    if (e.vestuario || e.queLlevar.length) {
+      h += '<h3>Qué llevar</h3><ul class="llevar">' + (e.vestuario ? '<li>' + esc(e.vestuario) + '</li>' : '') +
+        e.queLlevar.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+    }
+    if (e.info) h += '<div class="sub">' + esc(e.info) + '</div>';
+    var links = '';
+    if (e.maps) links += '<a href="' + esc(e.maps) + '" target="_blank" rel="noopener">Abrir en Maps</a>';
+    if (e.googleCal) links += '<a href="' + esc(e.googleCal) + '" target="_blank" rel="noopener">Google Calendar</a>';
+    links += icsLink(e);
+    if (links) h += '<div class="enlaces">' + links + '</div>';
+    h += respuestaHtml(it, kid);
+    return '<div class="detalle">' + h + '</div>';
+  }
+
+  function respuestaHtml(it, kid) {
+    var e = it.evento, quien = data.viewer === 'estudiante' ? 'puedes' : esc(kid.etiqueta || kid.primerNombre) + ' puede';
+    if (!it.puedeResponder) return '';
+    var id = esc(e.id), k = esc(kid.id);
+    if (it.respuesta === 'Confirmó') return '<div class="estado ok">Confirmaste. ¡Te esperamos!<button data-cambiar="' + id + '" data-kid="' + k + '">Cambiar</button></div>';
+    if (it.respuesta === 'No puede') return '<div class="estado no">Avisaste que no ' + (data.viewer === 'estudiante' ? 'puedes' : 'puede') + ' asistir.<button data-cambiar="' + id + '" data-kid="' + k + '">Cambiar</button></div>';
+    return '<div><div style="margin-bottom:8px">¿' + quien.charAt(0).toUpperCase() + quien.slice(1) + ' asistir?</div><div class="botones">' +
+      '<button class="btn si" data-resp="Confirmó" data-ev="' + id + '" data-kid="' + k + '">Confirmo</button>' +
+      '<button class="btn no" data-resp="No puede" data-ev="' + id + '" data-kid="' + k + '">No puedo</button></div></div>';
+  }
+
+  function render() {
+    var d = data, app = document.getElementById('app');
+    if (!d.kids.length) { showError('No hay participantes activos', 'Escríbele a Cantoalegre.'); return; }
+    var primeros = d.kids.map(function (k) { return k.primerNombre; });
+    d.kids.forEach(function (k) {
+      var repetido = primeros.filter(function (x) { return x === k.primerNombre; }).length > 1;
+      k.etiqueta = repetido ? k.nombre.split(' ').slice(0, 2).join(' ') : k.primerNombre;
+    });
+    var kid = d.kids[activo];
+    var nombres = d.kids.map(function (k) { return k.etiqueta; });
+    var saludo = d.viewer === 'estudiante' ? 'Hola,' : 'Hola, familia de';
+    var h = '<header><svg aria-hidden="true" width="150" height="150" viewBox="0 0 150 150"><path d="M98 22 L106 46 L131 47 L111 62 L118 86 L98 72 L78 86 L85 62 L65 47 L90 46 Z" fill="#FFEB4C" stroke="#FFEB4C" stroke-width="6" stroke-linejoin="round"/><path d="M20 120 q12 -10 24 0 t24 0 t24 0 t24 0" fill="none" stroke="#5BD6D6" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="70" r="5" fill="#FF5800"/></svg>' +
+      '<div class="marca">Cantoalegre · Coros</div><div class="saludo">' + saludo + '</div><h1>' + esc(nombres.length > 1 ? nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1] : nombres[0]) + '</h1>' +
+      '<span class="temporada">' + esc(d.temporada) + '</span></header>';
+    if (d.kids.length > 1) {
+      h += '<div class="kids" role="group" aria-label="Elegir niño">' + d.kids.map(function (k, i) {
+        return '<button class="kid" data-kidtab="' + i + '" aria-pressed="' + (i === activo) + '">' + esc(k.etiqueta) + '</button>';
+      }).join('') + '</div>';
+    }
+    var proximos = kid.items.filter(function (it) { return !it.evento.fecha || it.evento.fecha >= d.hoy || (it.evento.fechaFin && it.evento.fechaFin >= d.hoy); });
+    var pasados = kid.items.filter(function (it) { return proximos.indexOf(it) === -1; });
+    h += '<main>';
+    var porResponder = proximos.filter(function (it) { return it.respuesta === 'Pendiente' && it.puedeResponder; }).length;
+    h += '<div class="seccion">' + (proximos.length ? 'Próximos compromisos de ' + esc(kid.etiqueta) + (porResponder ? ' · ' + porResponder + ' por responder' : '') : '') + '</div>';
+    if (!proximos.length) h += '<div class="vacio">Por ahora ' + esc(kid.primerNombre) + ' no tiene citaciones nuevas. Te avisaremos por correo cuando haya una.</div>';
+    proximos.forEach(function (it, i) {
+      var e = it.evento, dc = diaCorto(e.fecha), key = activo + '|' + e.id;
+      if (abierto[key] === undefined && i === 0) abierto[key] = true;
+      var abiertoEste = !!abierto[key];
+      h += '<article class="card"><button class="resumen" data-toggle="' + esc(key) + '" aria-expanded="' + abiertoEste + '">' +
+        '<span class="dia ' + (e.tipo === 'Concierto' ? 'c' : 'e') + '"><small>' + esc(dc.w) + '</small><b>' + esc(dc.d) + '</b></span>' +
+        '<span class="tit"><span class="tipo">' + esc(e.tipo) + (e.queCambio ? ' <span class="pill p-cambio">Cambió</span>' : '') + '</span>' +
+        '<span class="nombre">' + esc(e.nombre) + '</span><span class="sub">' + esc(e.fecha ? e.fechaLarga : 'Fecha por confirmar') + (e.horaLlegada ? ' · llegada ' + esc(e.horaLlegada) : '') + '</span></span>' +
+        pillRespuesta(it) + '</button>' + (abiertoEste ? detalle(it, kid) : '') + '</article>';
+    });
+    if (pasados.length) {
+      h += '<details class="pasados"><summary>Ya pasaron (' + pasados.length + ')</summary>' + pasados.map(function (it) {
+        var a = it.asistencia === 'Asistió' ? 'Asistió' : (it.asistencia === 'No asistió' ? 'No asistió' : '');
+        return '<div class="pasado"><span>' + esc(it.evento.nombre) + '<br><span class="sub">' + esc(it.evento.fechaLarga) + '</span></span><span class="sub">' + esc(a) + '</span></div>';
+      }).join('') + '</details>';
+    }
+    h += '</main>';
+    app.innerHTML = h;
+  }
+
+  document.addEventListener('click', function (ev) {
+    var icsA = ev.target.closest('a[data-ics]');
+    if (icsA) { ev.preventDefault(); descargarIcs(icsA.dataset.ics); return; }
+    var b = ev.target.closest('button');
+    if (!b) return;
+    if (b.dataset.kidtab !== undefined) { activo = Number(b.dataset.kidtab); render(); return; }
+    if (b.dataset.toggle) { abierto[b.dataset.toggle] = !abierto[b.dataset.toggle]; render(); return; }
+    if (b.dataset.cambiar) {
+      var item = buscar(b.dataset.kid, b.dataset.cambiar); if (item) { item.respuesta = 'Pendiente'; item._cambiando = true; render(); } return;
+    }
+    if (b.dataset.resp) {
+      var botones = b.parentNode.querySelectorAll('button');
+      botones.forEach(function (x) { x.disabled = true; });
+      b.textContent = 'Guardando…';
+      var it = buscar(b.dataset.kid, b.dataset.ev);
+      api.respond(b.dataset.ev, b.dataset.kid, b.dataset.resp, function (r) {
+        it.respuesta = r.respuesta; render();
+        toast(r.respuesta === 'Confirmó' ? 'Listo, quedó confirmado.' : 'Listo, avisamos que no puede asistir.');
+      }, function (e) {
+        botones.forEach(function (x) { x.disabled = false; }); render();
+        toast('No se guardó: ' + e.message + ' Intenta de nuevo.');
+      });
+    }
+  });
+
+  function buscar(kidId, evId) {
+    var r = null;
+    data.kids.forEach(function (k) { if (k.id === kidId) k.items.forEach(function (it) { if (it.evento.id === evId) r = it; }); });
+    return r;
+  }
+
+  load();
+</script>
+</body>
+</html>
