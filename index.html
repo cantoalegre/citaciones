@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<title>Mis citaciones · Cantoalegre</title>
+<title>Navidad Cantoalegre</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icono-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#3779BD">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cantoalegre">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
@@ -75,6 +83,14 @@
   .toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--petroleo); color: #fff;
     padding: 12px 18px; border-radius: 14px; font-weight: 600; max-width: 90vw; z-index: 10; }
   :focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  .instalar { background: #fff; border: 2px solid var(--azul); border-radius: 20px; padding: 14px 16px; margin: 18px 0 4px; display: flex; gap: 12px; align-items: flex-start; }
+  .instalar img { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; }
+  .instalar b { display: block; font-size: 16px; margin-bottom: 2px; }
+  .instalar p { margin: 4px 0 0; font-size: 14px; color: var(--texto2); }
+  .instalar p b { font-size: inherit; margin: 0; color: var(--petroleo); }
+  .instalar .acciones { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .instalar button { min-height: 44px; border-radius: 12px; font: inherit; font-weight: 700; font-size: 15px; padding: 0 16px; cursor: pointer; border: 2px solid var(--azul); }
+  .instalar .si { background: var(--azul); color: #fff; } .instalar .luego { background: #fff; color: var(--azul-osc); }
   @media (prefers-reduced-motion: no-preference) { .detalle { animation: abrir .18s ease-out; } @keyframes abrir { from { opacity: 0; transform: translateY(-4px); } } }
 </style>
 </head>
@@ -87,6 +103,11 @@
   var API_URL = 'https://script.google.com/macros/s/AKfycbzpUuugwA1uB-4z7ldCX5fYAjinSyelxdJ7R7cItHzl1J7Tn5MYb_y4lptOQU_cQZ6T/exec';
   var params = new URLSearchParams(location.search);
   var TOKEN = (params.get('t') || '').replace(/[^a-f0-9]/gi, '');
+  // Recordar el enlace de la familia para cuando abran el ícono instalado.
+  try {
+    if (TOKEN) localStorage.setItem('cantoalegre_t', TOKEN);
+    else TOKEN = (localStorage.getItem('cantoalegre_t') || '').replace(/[^a-f0-9]/gi, '');
+  } catch (err) { /* sin almacenamiento: se usa solo el enlace */ }
   var FOCUS = (params.get('e') || '').replace(/[^A-Za-z0-9_-]/g, '');
 
   // Capa de datos: con API_URL (página externa) usa fetch sin cookies; si no, google.script.run.
@@ -230,7 +251,7 @@
     }
     var proximos = kid.items.filter(function (it) { return !it.evento.fecha || it.evento.fecha >= d.hoy || (it.evento.fechaFin && it.evento.fechaFin >= d.hoy); });
     var pasados = kid.items.filter(function (it) { return proximos.indexOf(it) === -1; });
-    h += '<main>';
+    h += '<main>' + instalarHtml();
     var porResponder = proximos.filter(function (it) { return it.respuesta === 'Pendiente' && it.puedeResponder; }).length;
     h += '<div class="seccion">' + (proximos.length ? 'Próximos compromisos de ' + esc(kid.etiqueta) + (porResponder ? ' · ' + porResponder + ' por responder' : '') : '') + '</div>';
     if (!proximos.length) h += '<div class="vacio">Por ahora ' + esc(kid.primerNombre) + ' no tiene citaciones nuevas. Te avisaremos por correo cuando haya una.</div>';
@@ -259,6 +280,12 @@
     if (icsA) { ev.preventDefault(); descargarIcs(icsA.dataset.ics); return; }
     var b = ev.target.closest('button');
     if (!b) return;
+    if (b.dataset.instalar !== undefined && promptInstalar) {
+      promptInstalar.prompt();
+      promptInstalar.userChoice.then(function () { promptInstalar = null; render(); });
+      return;
+    }
+    if (b.dataset.luego !== undefined) { try { localStorage.setItem('cantoalegre_instalar_oculto', '1'); } catch (err) {} render(); return; }
     if (b.dataset.kidtab !== undefined) { activo = Number(b.dataset.kidtab); render(); return; }
     if (b.dataset.toggle) { abierto[b.dataset.toggle] = !abierto[b.dataset.toggle]; render(); return; }
     if (b.dataset.cambiar) {
@@ -278,6 +305,26 @@
       });
     }
   });
+
+  // ---------- Instalar en el celular ----------
+  var promptInstalar = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); promptInstalar = e; if (data) render(); });
+  window.addEventListener('appinstalled', function () { try { localStorage.setItem('cantoalegre_instalada', '1'); } catch (err) {} render(); });
+  function instalada() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  }
+  function instalarHtml() {
+    var oculto = false;
+    try { oculto = localStorage.getItem('cantoalegre_instalar_oculto') === '1' || localStorage.getItem('cantoalegre_instalada') === '1'; } catch (err) {}
+    if (instalada() || oculto) return '';
+    var ua = navigator.userAgent || '';
+    var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var pasos;
+    if (promptInstalar) pasos = '<p>Tenla a mano en tu celular, como una app.</p><div class="acciones"><button class="si" data-instalar>Instalar</button><button class="luego" data-luego>Ahora no</button></div>';
+    else if (ios) pasos = '<p>En Safari toca el botón <b style="display:inline">Compartir</b> (el cuadro con la flecha hacia arriba) y luego <b style="display:inline">Agregar a inicio</b>.</p><div class="acciones"><button class="luego" data-luego>Entendido</button></div>';
+    else pasos = '<p>En Chrome toca el menú <b style="display:inline">⋮</b> y luego <b style="display:inline">Agregar a la pantalla principal</b> o <b style="display:inline">Instalar aplicación</b>.</p><div class="acciones"><button class="luego" data-luego>Entendido</button></div>';
+    return '<div class="instalar"><img src="icono-192.png" alt=""><div><b>Instala Navidad Cantoalegre</b>' + pasos + '</div></div>';
+  }
 
   function buscar(kidId, evId) {
     var r = null;
