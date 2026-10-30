@@ -1,0 +1,14 @@
+{
+  "name": "Navidad Cantoalegre",
+  "short_name": "Cantoalegre",
+  "description": "Citaciones, horarios y confirmaciones de los conciertos de Navidad de Cantoalegre.",
+  "lang": "es",
+  "display": "standalone",
+  "background_color": "#F4F5EE",
+  "theme_color": "#3779BD",
+  "icons": [
+    { "src": "icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icono-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icono-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
